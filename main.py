@@ -7,15 +7,18 @@
 # | ann       |    pass123  |
 # | mike      | password123 |
 # | liz       |    pass123  |
-# | Miky      |    123      |
 
-data = {'bob': '123', 'ann': 'pass123', 'mike': 'password123', 'liz': 'pass123', 'Miky': '123'}
+login_data = {'bob': '123',
+              'ann': 'pass123',
+              'mike': 'password123',
+              'liz': 'pass123'
+              }
 
 # Zeptej se na uzivatelske jmeno a heslo
 jmeno = input('Zadej své jméno: ')
 heslo = input('Zadej heslo: ')
 
-print('-' * 100)
+print('-' * 65)
 
 # definování proměnných (3 texty k vyhodnocení)
 zdroj1 = 'BBC'
@@ -32,20 +35,19 @@ TEXTS['2'] = dict((("zdroj", zdroj2), ("text", text2)))
 TEXTS['3'] = dict((("zdroj", zdroj3), ("text", text3)))
 
 # Vyhodnocení jména a hesla
-if data.get(jmeno) == heslo:
+if login_data.get(jmeno) == heslo:
     print('Vítej v aplikaci "TexAN", ' + jmeno + '!' \
-          + ' K analýze textu je aktuálně k dispozici tento počet článků: ' \
-          + str(len(TEXTS)))
+          + ' Počet článků k analýze textu: ' + str(len(TEXTS)))
 else:
-    print('Heslo, nebo uživatelské jméno je špatně!')
+    print('Heslo, nebo uživatelské jméno je špatně')
     exit()
 
-print('-' * 100)
+print('-' * 65)
 
 # vstup od uživatele (výber článku)
 vyber_text = input('Zadej pořadové číslo článku (v rozmezí 1 až ' + str(len(TEXTS)) + '): ')
 
-print('-' * 100)
+print('-' * 65)
 
 # Porovnávám, že zadaná hodnota je typu INT (nelze porovnávat type v if-else bloku, použil jsem try-expect block):
 try:
@@ -61,14 +63,15 @@ if vyber_text in TEXTS.keys():
 else:
     print('K dispozici jsou pouze ' + str(len(TEXTS)) + ' články')
     exit()
-print('-' * 100)
+
+print('-' * 65)
 
 # vybírám zdroj článku do textu s první odpovědí
 vybrany_text = TEXTS.get(vyber_text)
 zdroj_clanku = (vybrany_text["zdroj"])
 
 # List s jednotlivymi slovy a list s ocistenymi slovy
-text = TEXTS[vyber_text]["text"].split(" ")  # Takto se dostanu k jednotlivym slovum
+text = TEXTS[vyber_text]["text"].split(" ")
 # =================================================================================
 w_list = []  # očištěná slová !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 for word in text:
@@ -76,36 +79,32 @@ for word in text:
 # =================================================================================
 
 # počítám slova ve vybranem textu
-words_list = []
+word_lst = []
 for word in w_list:
-    words_list.append(word)
-print('Počet slov ve vybraném článku od agentury' + ' ' + str(zdroj_clanku) + ': ' + str(len(words_list)))
+    word_lst.append(word)
 
 # počítám slova s velkym a malym pocatecnim pismenem ve vybranem textu
-withcap = []
-without = []
+title_case = []
+without_tc = []
 for word in w_list:
     if word.islower():
-        without.append(word)
+        without_tc.append(word)
     else:
-        withcap.append(word)
-withcap_alpha = [word for word in withcap if word.isalpha()]
-print('Počet slov začínajících velkým písmenem ve vybraném článku: ' + str(len(withcap_alpha)))
+        title_case.append(word)
+tc_alpha = [word for word in title_case if word.isalpha()]
 
 # Počet slov psaných velkými písmeny (všechna písmena ve slově jsou velká)
 other_low = []
-uppers = []
+upper_words = []
 for word in w_list:
-    uppers.append(word) if word.isupper() else other_low.append(word)
-uppers_alpha = [word for word in uppers if word.isalpha()]
-print('Počet slov psaných velkým písmem: ' + str(len(uppers_alpha)))
+    upper_words.append(word) if word.isupper() else other_low.append(word)
+uw_alpha = [word for word in upper_words if word.isalpha()]
 
 # Počet slov psaných malými písmeny (všechna písmena ve slově jsou malá)
 other_upp = []
-lowers = []
+lower_words = []
 for word in w_list:
-    lowers.append(word) if word.islower() else other_upp.append(word)
-print('Počet slov psaných malým písmem: ' + str(len(lowers)))
+    lower_words.append(word) if word.islower() else other_upp.append(word)
 
 
 # Počet cisel
@@ -113,40 +112,45 @@ def pocet_cisel(cislo_v_textu):
     return len([int(i) for i in cislo_v_textu if type(i) == int or i.isdigit()])
 
 
-print('Počet všech čísel (ne cifer) ve vybraném článku: ' + str(pocet_cisel(w_list)))
-
-
 # Součet cisel
 def soucet_cisel(cislo_v_textu):
     return sum([int(i) for i in cislo_v_textu if type(i) == int or i.isdigit()])
 
 
+# Výsledky výpočtů - tisk/zobrazení
+print('Počet slov ve vybraném článku od agentury' + ' ' + str(zdroj_clanku) + ': ' + str(len(word_lst)))
+print('Počet slov začínajících velkým písmenem ve vybraném článku: ' + str(len(tc_alpha)))
+print('Počet slov psaných velkým písmem: ' + str(len(uw_alpha)))
+print('Počet slov psaných malým písmem: ' + str(len(lower_words)))
+print('Počet všech čísel (ne cifer) ve vybraném článku: ' + str(pocet_cisel(w_list)))
 print('Součet všech čísel (ne cifer) ve vybraném článku: ' + str(soucet_cisel(w_list)))
 
-print('-' * 100)
+print('-' * 65)
 
-# Četnost vyskytu dle délky
-podle_delky = dict()
+# Četnost occurence_grafu dle délky
+by_length = dict()
 for slovo in w_list:
-    for rozmezi in range(30):
-        if len(slovo) == rozmezi:
-            podle_delky[str(rozmezi)] = podle_delky.setdefault(str(rozmezi), 0) + 1
+    for range_in in range(30):
+        if len(slovo) == range_in:
+            by_length[str(range_in)] = by_length.setdefault(str(range_in), 0) + 1
 
 # Klíče na cisla
-klice = list(podle_delky.keys())
-for i in range(0, len(klice)):
-    klice[i] = int(klice[i])
-klice.sort(reverse=True)
+keys_for_num = list(by_length.keys())
+for i in range(0, len(keys_for_num)):
+    keys_for_num[i] = int(keys_for_num[i])
+keys_for_num.sort(reverse=True)
 
-# graf tabulka
-vyskyt = "             Výskyt              "
-print("Délka|" + vyskyt + "|Počet")
-print('=' * 100)
-for cislovani in range(1, (klice[0] + 1)):
-    mezerka = int((4 - len(str(cislovani)))) * " "
-    if cislovani in klice:
-        print(cislovani, mezerka + "|", podle_delky.get(str(cislovani)) \
-              * "*", ((len(vyskyt) - 3) - podle_delky.get(str(cislovani))) \
-              * " " + " |", podle_delky.get(str(cislovani)))
+# Graf tabulka
+occurence_graf = "  Výskyt - graf. znázornění   "
+print("Délka slov |" + occurence_graf + "|Počet znaků")
 
-print('=' * 100)
+print('=' * 65)
+
+for numbered_graf in range(1, (keys_for_num[0] + 1)):
+    gap_graf = int((4 - len(str(numbered_graf)))) * " "
+    if numbered_graf in keys_for_num:
+        print('    ' + str(numbered_graf), str(gap_graf) + "  |", by_length.get(str(numbered_graf)) \
+              * "*", ((len(occurence_graf) - 3) - by_length.get(str(numbered_graf))) \
+              * " " + " |", by_length.get(str(numbered_graf)))
+
+print('=' * 65)
